@@ -26,8 +26,8 @@ def load_vec(emb_path):
     return embeddings, id2word, word2id
 
 
-src_path = '../../../vecmap/SRC_MAPPED-de-en-identical.EMB'
-tgt_path = '../../../vecmap/TRG_MAPPED-de-en-identical.EMB'
+src_path = '../../../vecmap/SRC_MAPPED-en-de-identical.EMB'
+tgt_path = '../../../vecmap/TRG_MAPPED-en-de-identical.EMB'
 
 src_embeddings, src_id2word, src_word2id = load_vec(src_path)
 tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(tgt_path)
@@ -104,9 +104,20 @@ def csv_output(rows):
         f.close()
 
 
+def remove_digit_punct_stopword(infile, outfile, lang):
+    with open(outfile, 'w') as f:
+        for line in open(infile):
+            # split into words
+            extract_words = line.split()
+            for word in extract_words:
+                filtered_word = re.sub('[^a-zA-Z \s\d+]', '', word)
+                f.write(filtered_word + "\n")
+
+
+
 if __name__ == '__main__':
 
-    f = open('../../../output1.txt', 'w')
+    f = open('../../../output2.txt', 'w')
     # pca = PCA(n_components=2, whiten=True)
     # pca.fit(np.vstack([src_embeddings, tgt_embeddings]))
     # print('Variance explained: %.2f' % pca.explained_variance_ratio_.sum())
@@ -120,8 +131,8 @@ if __name__ == '__main__':
 
 
     # split sentence into single words
-    src_words = ['haben', 'sie', 'eine', 'Zahnprothese']
-    #tgt_words = ['smoking', 'ever', 'cigarettes', 'cigars', 'cigarillos', 'pipe', 'smoked']
+    src_words = ['approximately','how', 'much', 'you', 'weigh']
+    tgt_words = ['ungefähr','wie', 'viel', 'wiegen', 'sie']
     index = 0
     # spell = SpellChecker()
     matched = 0
@@ -137,11 +148,11 @@ if __name__ == '__main__':
 
             try:
                 # search if the given translation is in generated results
-                #assert tgt_words[index] in words
-                #print("\""+tgt_words[index]+"\""+ " is a matched word.", file=f)
+                assert tgt_words[index] in words
+                print("\""+tgt_words[index]+"\""+ " is a matched word.", file=f)
                 matched += 1
             except AssertionError:
-                #print("\""+tgt_words[index]+"\""+ " not in search results.", file=f)
+                print("\""+tgt_words[index]+"\""+ " not in search results.", file=f)
                 unmatched += 1
                 # print("Please check if the word is misspelled. List of Suggestion:", file=f)
                 # print(list(spell.candidates(tgt_words[index])), file =f)
