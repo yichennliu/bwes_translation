@@ -77,6 +77,19 @@ def create_dictionary(file1, file2, endfile):
                 for line1, line2 in zip(f1lines, f2lines):
                     result.write("{} {}\n".format(line1.rstrip(), line2.rstrip()))
 
+# def merge_second_lexicon(file1, file2, endfile):
+#     with open(file1,'r', encoding="UTF8") as f1:
+#         with open(file2, 'r', encoding="UTF8") as f2:
+#             with open(endfile, 'w') as result:
+#                 # Read first file
+#                 f1lines = f1.readlines()
+#                 # Read second file
+#                 f2lines = f2.readlines()
+#                 # Combine content of both lists  and Write to third file
+#                 for line1, line2 in zip(f1lines, f2lines):
+#                     result.write("{}\n {}\n".format(line1, line2))
+
+
 def remove_line(infile, outfile):
    with open(outfile, 'w') as f:
         with open(infile, 'r') as file:
@@ -85,16 +98,25 @@ def remove_line(infile, outfile):
                 if len(line) == 2:
                     f.write(" ".join(str(word) for word in line)+"\n")
 
-
+def to_lowercase(infile, outfile):
+    with open(outfile, 'w') as file:
+        with open(infile, 'r') as f:
+            for line in f:
+                line = line.strip().split()
+                lower = [word.lower() for word in line]
+                file.write(" ".join(str(w) for w in lower) + "\n")
 
 
 if __name__ == '__main__':
-    # remove_digit_punct_stopword("../../../shuffle-gen-en-train", "../../../removed_noise_gen-en", 'english')
-    # remove_digit_punct_stopword("../../../shuffle-gen-de-train", "../../../removed_noise_gen-de", 'german')
-    # extract_most_frequent("../../../removed_noise_gen-en", "../../../en_freq")
-    # extract_most_frequent("../../../removed_noise_gen-de", "../../../de_freq")
-    # skip_empty_line("../../../Seed_de_en_translated","../../../seed_de-en-ok")
-    # skip_empty_line("../../../Seed_en_de_translated", "../../../seed_en-de-ok")
-    # create_dictionary("../../../seed_en-de","../../../seed_en-de-ok", "../../../seed_EN-DE")
-    # create_dictionary("../../../seed_de-en", "../../../seed_de-en-ok", "../../../seed_DE-EN")
-    remove_line("../../../seed_DE-EN", "../../../finished_DE-EN")
+    # remove_digit_punct_stopword("../../../shuffle-en-train-NOS", "../../../removed_noise-en", 'english')
+    # remove_digit_punct_stopword("../../../shuffle-de-train-NOS", "../../../removed_noise-de", 'german')
+    # extract_most_frequent("../../../removed_noise-en", "../../../en_freq")
+    # extract_most_frequent("../../../removed_noise-de", "../../../de_freq")
+    # skip_empty_line("../../../en-de-translate","../../../en-de-ok")
+    # skip_empty_line("../../../de-en-translate", "../../../de-en-ok")
+    # create_dictionary("../../../en","../../../en-de-ok", "../../../EN-DE-wos")
+    # create_dictionary("../../../de", "../../../de-en-ok", "../../../DE-EN-wos")
+    # remove_line("../../../DE-EN-wos", "../../../WOS-seed_DE-EN")
+    # remove_line("../../../EN-DE-wos", "../../../WOS-seed_EN-DE")
+    to_lowercase("../../../finished_gd_DE-EN", "../../../WS-gd_DE-EN")
+    to_lowercase("../../../finished_gd_EN-DE", "../../../WS-gd_EN-DE")
