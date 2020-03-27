@@ -35,7 +35,7 @@ def extract_most_frequent(infile, outfile):
     with open(outfile, 'w', encoding= 'UTF8') as file:
         with open(infile, "r", encoding= 'UTF8') as input:
             count = Counter(line for line in input)
-            for word in count.most_common(5000):
+            for word in count.most_common(2000):
                 file.writelines(word[0] + "\n")
 
 
@@ -108,15 +108,16 @@ def to_lowercase(infile, outfile):
 
 
 if __name__ == '__main__':
-    # remove_digit_punct_stopword("../../../shuffle-en-train-NOS", "../../../removed_noise-en", 'english')
-    # remove_digit_punct_stopword("../../../shuffle-de-train-NOS", "../../../removed_noise-de", 'german')
+    # remove_digit_punct_stopword("../../../tok_lc_survey_en", "../../../removed_noise-en", 'english')
+    # remove_digit_punct_stopword("../../../tok_lc_survey_de", "../../../removed_noise-de", 'german')
     # extract_most_frequent("../../../removed_noise-en", "../../../en_freq")
     # extract_most_frequent("../../../removed_noise-de", "../../../de_freq")
-    # skip_empty_line("../../../en-de-translate","../../../en-de-ok")
-    # skip_empty_line("../../../de-en-translate", "../../../de-en-ok")
-    # create_dictionary("../../../en","../../../en-de-ok", "../../../EN-DE-wos")
-    # create_dictionary("../../../de", "../../../de-en-ok", "../../../DE-EN-wos")
-    # remove_line("../../../DE-EN-wos", "../../../WOS-seed_DE-EN")
-    # remove_line("../../../EN-DE-wos", "../../../WOS-seed_EN-DE")
-    to_lowercase("../../../finished_gd_DE-EN", "../../../WS-gd_DE-EN")
-    to_lowercase("../../../finished_gd_EN-DE", "../../../WS-gd_EN-DE")
+    # skip_empty_line("../../../SH-en-de-translate","../../../SH-en-de")
+    # skip_empty_line("../../../SH-de-en-trans", "../../../SH-de-en")
+    # create_dictionary("../../../en-ok","../../../SH-en-de", "../../../SH_EN-DE")
+    # create_dictionary("../../../de-ok", "../../../SH-de-en", "../../../SH_DE-EN")
+    # remove_line("../../../SH_EN-DE", "../../../end_EN-DE")
+    # remove_line("../../../SH_DE-EN", "../../../end_DE-EN")
+    # to_lowercase("../../../end_DE-EN", "../../../SH_gd-de-en")
+    # to_lowercase("../../../end_EN-DE", "../../../SH_gd_en-de")
+    calculate_words("../../../en-de.5000-6500.txt")
