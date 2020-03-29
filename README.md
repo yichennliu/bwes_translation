@@ -7,8 +7,8 @@ In this Bachelor thesis, unsupervised bilingual word embeddings are created by e
 
 ### Prerequisites
 
-Python 3.5
-Dependencies in requirements.txt
+* Python 3.5 
+* Dependencies in requirements.txt
 
 ```
 pip install -r requirements.txt
