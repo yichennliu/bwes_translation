@@ -4,7 +4,7 @@ Translation has been one of the most important tasks that strengthens the commun
 This task is not only performed by human translators, but also by machine translation systems. Creating machine translation systems needs a lot of parallel corpora, 
 which is expensive and might not be available for some languages and specific domains.
 In this Bachelor thesis, unsupervised bilingual word embeddings are created by exploiting monolingual corpora of source language and target language. 
-This approach enables to mine translations under circumstances where there is a limited amount of parallel corpora in different languages as well as in specific domains. The performance of the approach is evaluated with different word translation tasks on different domains that simulate the translation and translation verification tasks in the Survey of Health, Ageing and Retirement in Europe ([SHARE](http://www.share-project.org/home0.html))project, which is a research project that aims to improve social policies through studying the living status of aging population in Europe.
+This approach enables to mine translations under circumstances where there is a limited amount of parallel corpora in different languages as well as in specific domains. The performance of the approach is evaluated with different word translation tasks on different domains that simulate the translation and translation verification tasks in the Survey of Health, Ageing and Retirement in Europe ([SHARE](http://www.share-project.org/home0.html)) project, which is a research project that aims to improve social policies through studying the living status of aging population in Europe.
 
 
 ## Prerequisites
