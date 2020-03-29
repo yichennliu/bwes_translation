@@ -4,8 +4,7 @@ import io
 import string
 import sys
 import numpy as np
-import pandas as pd
-
+from termcolor import colored
 
 def load_vec(emb_path):
     vectors = []
@@ -23,8 +22,8 @@ def load_vec(emb_path):
     return embeddings, id2word, word2id
 
 
-src_path = '../../../vecmap/SRC_MAPPED-de-en-identical.EMB'
-tgt_path = '../../../vecmap/TRG_MAPPED-de-en-identical.EMB'
+src_path = sys.argv[1]
+tgt_path = sys.argv[2]
 
 src_embeddings, src_id2word, src_word2id = load_vec(src_path)
 tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(tgt_path)
@@ -43,65 +42,57 @@ def get_nn(word, src_emb, src_id2word, tgt_emb, tgt_id2word, K=5):
         results.append(tgt_id2word[idx])
     return results
 
-def csv_output(precision, recall):
-    df = pd.read_csv(sys.argv[1])
-    df["Precision"] = precision
-    df["Recall"] = recall
-    df.to_csv(sys.argv[1], index=False)
 
 
 if __name__ == '__main__':
 
-    translated_words = []
-    reference = []
-    with open(sys.argv[1], 'r') as file:
+    with open(sys.argv[3], 'r') as file:
+        translation = []
+        translated_words = []
+        reference = []
+        reference_words = []
         matching = {}
         csv_reader = csv.reader(file)
         next(csv_reader)
         for row in csv_reader:
             for sentence in row:
                 sentence = sentence.split('\t')
+                translation.append(sentence[1])
+                reference.append(sentence[0])
+                print("Generics: "+sentence[0])
+                print("Translation: "+sentence[1])
                 res = [s.translate(str.maketrans('', '', string.punctuation)) for s in sentence]
                 result_list = [elem.lower() for elem in res]
-                for ref in result_list[0].split():
-                    reference.append(ref)
-                    matching = dict.fromkeys(reference, 0)
 
-                for word in result_list[1].split():
-                    translated_words.append(word)
-                print(matching)
+                reference_words = result_list[0].split()
+                matching = dict.fromkeys(reference_words, 0)
+
+                translated_words = result_list[1].split()
+
                 # check given translations
+                matched = 0
                 for sw in translated_words:
                     try:
                         # search top 10 translations
                         words = get_nn(sw, src_embeddings, src_id2word, tgt_embeddings, tgt_id2word, K=10)
-                        matched = 0
                         for w in words:
                             if w in matching.keys():
                                 matching[w] += 1
-                        for key, value in matching.items():
-                            if value >= 1:
-                                matched += 1
-
-                        precision = matched / len(translated_words)
-                        print(matched)
-                        print(precision)
-                        recall = matched / len(reference)
-                        print(recall)
-                        csv_output(precision, recall)
 
                     except KeyError:
                         print("\"" + sw + "\"" + " not found in dictionary.")
 
-    # try:
-    #     # search if the given translation is in generated results
-    #     #assert tgt_words[index] in words
-    #     #print("\""+tgt_words[index]+"\""+ " is a matched word.", file=f)
-    #
-    # except AssertionError:
-    #     # print("\""+tgt_words[index]+"\""+ " not in search results.", file=f)
-    #     # print("Please check if the word is misspelled. List of Suggestion:", file=f)
-    #     # print(list(spell.candidates(tgt_words[index])), file =f)
+                for key, value in matching.items():
+                    if value >= 1:
+                        matched += 1
 
-# print("Matched words" + " "+str(matched), file=f)
-# print("Unmatched words" + " "+str(unmatched), file=f)
+                precision = round(matched / len(translated_words), 2)
+                recall = round(matched / len(reference_words),2)
+                if precision < 0.5 or recall < 0.5:
+                    print("Precision: "+ colored(str(precision), 'red'))
+                    print("Recall: "+ str(recall))
+
+                else:
+                    print("Precision: " + str(precision))
+                    print("Recall: " + str(recall))
+
