@@ -28,7 +28,7 @@ python3 translate-de-en.py SRC_MAPPED.EMB TRG_MAPPED.EMB csv_file
 For SHARE translation verification, German word embeddings (as SRC_MAPPED.EMB) are projected onto English word embeddings (as TRG_MAPPED.EMB). For example:
 
 ```
-python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo_csv_file
+python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv
 
 ```
 
