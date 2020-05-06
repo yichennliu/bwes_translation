@@ -42,17 +42,14 @@ def get_nn(word, src_emb, src_id2word, tgt_emb, tgt_id2word, K=5):
         results.append(tgt_id2word[idx])
     return results
 
-
-
 if __name__ == '__main__':
-
     with open(sys.argv[3], 'r') as file:
         translation = []
         translated_words = []
         reference = []
         reference_words = []
         matching = {}
-        csv_reader = csv.reader(file)
+        csv_reader = csv.reader(file, delimiter= '|', skipinitialspace=True)
         next(csv_reader)
         for row in csv_reader:
             for sentence in row:
@@ -80,19 +77,24 @@ if __name__ == '__main__':
                                 matching[w] += 1
 
                     except KeyError:
-                        print("\"" + sw + "\"" + " not found in dictionary.")
+                        print(colored(str("\"" + sw + "\"") + " not found in dictionary.", 'cyan'))
 
                 for key, value in matching.items():
                     if value >= 1:
                         matched += 1
 
-                precision = round(matched / len(translated_words), 2)
-                recall = round(matched / len(reference_words),2)
-                if precision < 0.5 or recall < 0.5:
-                    print("Precision: "+ colored(str(precision), 'red'))
-                    print("Recall: "+ str(recall))
+                target_match = round(matched / len(translated_words), 2)
+                source_match = round(matched / len(reference_words), 2)
+                if target_match < 0.5 or target_match == 1.0:
+                    print(colored("Target Match Score: ", 'blue') + colored(str(target_match), 'red'))
+                    print(colored("Source Match Score: ", 'blue') + str(source_match))
+
+                elif source_match < 0.5 or source_match == 1.0:
+                    print(colored("Target Match Score: ", 'blue') + str(target_match))
+                    print(colored("Source Match Score: ", 'blue')+ colored(str(source_match), 'red'))
+
 
                 else:
-                    print("Precision: " + str(precision))
-                    print("Recall: " + str(recall))
+                    print(colored("Target Match Score: ", 'blue') + str(target_match))
+                    print(colored("Source Match Score: ", 'blue') + str(source_match))
 

@@ -6,12 +6,12 @@ de_data = ["../../../news_tok_lcased.de", "../../../europarl-v9-tok-lc.de"]
 en_data = ["../../../news_tok_lcased.en", "../../../europarl-v9-tok-lc.en"]
 
 
-#fr_gen_data = ["../../Dataset/SH_gen_fr_tok_lc.txt", "../../Dataset/news_tok_lcased.fr",
-               #"../../Dataset/europarl-v7-tok-lc.fr", "../../Dataset/tok_lcased.nc.fr"]
+fr_gen_data = ["../../Dataset/SH_gen_fr_tok_lc.txt", "../../Dataset/news_tok_lcased.fr",
+               "../../Dataset/europarl-v7-tok-lc.fr", "../../Dataset/tok_lcased.nc.fr"]
 
-#en_med_data = ["../../Dataset/SH_med_en_tok_lc.txt", "../../Dataset/medical_en_tok_lc.txt"]
-#de_med_data = ["../../Dataset/SH_med_de_tok_lc.txt", "../../Dataset/medical_de_tok_lc.txt"]
-#fr_med_data = ["../../Dataset/SH_med_fr_tok_lc.txt", "../../Dataset/medical_fr_tok_lc.txt"]
+en_med_data = ["../../Dataset/SH_med_en_tok_lc.txt", "../../Dataset/medical_en_tok_lc.txt"]
+de_med_data = ["../../Dataset/SH_med_de_tok_lc.txt", "../../Dataset/medical_de_tok_lc.txt"]
+fr_med_data = ["../../Dataset/SH_med_fr_tok_lc.txt", "../../Dataset/medical_fr_tok_lc.txt"]
 
 
 
