@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-To run translation verification, bilingual word embeddings need to be created. For tasks in SHARE, We use [Vecmap](https://github.com/artetxem/vecmap) to train them. The trained embeddings
+To run translation verification, bilingual word embeddings need to be created. For tasks in SHARE, we use [Vecmap](https://github.com/artetxem/vecmap) to train them. The trained embeddings
 are available in the SHARE drive.
 
 ```
@@ -32,7 +32,7 @@ python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv
 
 ```
 
-The precision and recall matching scores will be printed out in the terminal. Scores that are lower than 0.50 or turn out to be 1.0 will be marked in red, implying the verifiers that they should recheck the human translation.
+The source and target scores will be printed out in the terminal. Scores that are lower than 0.50 or turn out to be 1.0 will be marked in red, implying the verifiers that they should recheck the human translation.
 
 
 
