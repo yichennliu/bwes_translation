@@ -28,11 +28,10 @@ python3 translate-de-en.py SRC_MAPPED.EMB TRG_MAPPED.EMB csv_file
 For SHARE translation verification, German word embeddings (as SRC_MAPPED.EMB) are projected onto English word embeddings (as TRG_MAPPED.EMB). For example:
 
 ```
-python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv
-
+python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv results.csv
 ```
 
-The source and target scores will be printed out in the terminal. Scores that are lower than 0.50 will be marked in red, implying the verifiers that they should recheck the human translation.
+The results will be listed in a csv file. Target match score that are lower than 0.50 will be flagged (noted as 1), implying the verifiers that they should recheck human translation.
 
 
 
