@@ -90,7 +90,9 @@ if __name__ == '__main__':
                                     matching[w] += 1
 
                         except KeyError:
-                            print(str("\"" + sw + "\"") + " not found in dictionary.")
+                            with open("lexicon.txt", 'w') as lex:
+                                lex.write(str("\"" + sw + "\"")+"\n")
+
 
                     for key, value in matching.items():
                         if value >= 1:

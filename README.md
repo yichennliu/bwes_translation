@@ -31,7 +31,7 @@ For SHARE translation verification, German word embeddings (as SRC_MAPPED.EMB) a
 python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv results.csv
 ```
 
-The results will be listed in a csv file. Target match score that are lower than 0.50 will be flagged (noted as 1), implying the verifiers that they should recheck human translation.
+The results will be listed in a csv file. Target match scores that are lower than 0.50 will be flagged (noted as 1), implying the verifiers that they should recheck human translation.
 
 
 
