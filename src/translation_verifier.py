@@ -1,53 +1,17 @@
 #!/usr/bin/python3
-import csv
-import io
-import string
 import sys
 
-import numpy as np
+sys.path.append('/home/yibsimo/PycharmProjects/bwes_translation')
+from src.streamlit.model import load_vec, get_nn
+import csv
+import string
 
+src_emb = sys.argv[1]
+tgt_emb = sys.argv[2]
 output = sys.argv[4]
 
 
-def load_vec(emb_path):
-    vectors = []
-    word2id = {}
-    with io.open(emb_path, 'r', encoding='utf-8', newline='\n', errors='ignore') as f:
-        next(f)
-        for i, line in enumerate(f):
-            word, vect = line.rstrip().split(' ', 1)
-            vect = np.fromstring(vect, sep=' ')
-            assert word not in word2id, 'word found twice'
-            vectors.append(vect)
-            word2id[word] = len(word2id)
-    id2word = {v: k for k, v in word2id.items()}
-    embeddings = np.vstack(vectors)
-    return embeddings, id2word, word2id
-
-
-src_path = sys.argv[1]
-tgt_path = sys.argv[2]
-
-src_embeddings, src_id2word, src_word2id = load_vec(src_path)
-tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(tgt_path)
-
-
-# calculate nearest neighbour
-def get_nn(word, src_emb, src_id2word, tgt_emb, tgt_id2word, K=5):
-    results = []
-    # print("Nearest neighbors of \"%s\":" % word)
-    word2id = {v: k for k, v in src_id2word.items()}
-    word_emb = src_emb[word2id[word]]
-    scores = (tgt_emb / np.linalg.norm(tgt_emb, 2, 1)[:, None]).dot(word_emb / np.linalg.norm(word_emb))
-    k_best = scores.argsort()[-K:][::-1]
-    for i, idx in enumerate(k_best):
-        # print('%.4f - %s' % (scores[idx], tgt_id2word[idx]))
-        results.append(tgt_id2word[idx])
-    return results
-
-
-if __name__ == '__main__':
-
+def main():
     with open(output, 'w') as op:
         writer = csv.writer(op, delimiter=',')
         header = ['Generics', 'Translation', 'Target Match Score', 'Source Match Score', 'Flag']
@@ -91,8 +55,7 @@ if __name__ == '__main__':
 
                         except KeyError:
                             with open("lexicon.txt", 'w') as lex:
-                                lex.write(str("\"" + sw + "\"")+"\n")
-
+                                lex.write(str("\"" + sw + "\"") + "\n")
 
                     for key, value in matching.items():
                         if value >= 1:
@@ -117,3 +80,9 @@ if __name__ == '__main__':
                         inputs.append("0")
 
                     writer.writerow(d for d in inputs)
+
+
+if __name__ == '__main__':
+    src_embeddings, src_id2word, src_word2id = load_vec(src_emb)
+    tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(tgt_emb)
+    main()

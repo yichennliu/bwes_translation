@@ -9,7 +9,7 @@ This approach enables to mine translations under circumstances where there is a 
 
 ## Prerequisites
 
-* Python 3.5 
+* Python 3.5 or later
 * Dependencies in requirements.txt
 
 ```
@@ -18,20 +18,32 @@ pip install -r requirements.txt
 
 ## Usage
 
-To run translation verification, bilingual word embeddings need to be created. For tasks in SHARE, we use [Vecmap](https://github.com/artetxem/vecmap) to train them. The trained embeddings
-are available upon request.
+Before running translation verification, bilingual word embeddings need to be created. For tasks in SHARE, we use [Vecmap](https://github.com/artetxem/vecmap) to train them.
+
+
+### Streamlit
+
+We use Streamlit to display the verification process and visualize our current trained model. Currently, we are working on German to English translation verification. For further information, run the following command:
 
 ```
-python3 translate-de-en.py SRC_MAPPED.EMB TRG_MAPPED.EMB csv_file
+streamlit run app.py
+```
+
+### Customization
+
+Import your own trained bilingual word embeddings with language pairs in your favor and run the following command:
+
+```
+python3 translation_verifier.py SRC_MAPPED.EMB TRG_MAPPED.EMB file_to_be_checked.csv output_results.csv
 ```
 
 For SHARE translation verification, German word embeddings (as SRC_MAPPED.EMB) are projected onto English word embeddings (as TRG_MAPPED.EMB). For example:
 
 ```
-python3 translate-de-en.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv results.csv
+python3 translation_verifier.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.csv results.csv
 ```
 
-The results will be listed in a csv file. Target match scores that are lower than 0.50 will be flagged (noted as 1), implying the verifiers that they should recheck human translation.
+The results are listed in a csv file. Target match scores that are lower than 0.50 will be flagged (noted as 1), implying human verifiers that they should recheck their translation. For more detail about how the csv files are created, please check the demo.csv and results.csv in the data directory.
 
 
 
