@@ -37,7 +37,7 @@ chardet==3.0.4
 chrome-gnome-shell==0.0.0
 click==7.1.2
 cloudpickle==1.4.1
-colander==0.9.9
+colander==1.7.0
 colorama==0.4.3
 command-not-found==0.3
 cryptography==2.1.4
