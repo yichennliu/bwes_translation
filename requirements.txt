@@ -123,7 +123,7 @@ nest-asyncio==1.4.2
 netifaces==0.10.4
 networkx==2.4
 nltk==3.4.5
-notebook==6.1.4
+notebook==6.1.5
 numpy==1.18.1
 oauth==1.0.1
 olefile==0.45.1
