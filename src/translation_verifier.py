@@ -49,7 +49,8 @@ def main():
                         try:
                             # search top 10 translations
                             words = get_nn(sw, src_embeddings, src_id2word, tgt_embeddings, tgt_id2word, K=10)
-                            for w in words:
+                            for tup in words:
+                                w = tup[0]
                                 if w in matching.keys():
                                     matching[w] += 1
 

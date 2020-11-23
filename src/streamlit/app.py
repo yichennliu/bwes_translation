@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import os
 import sys
+import altair as alt
 
+#insert your package path here
 sys.path.append('/home/yibsimo/PycharmProjects/bwes_translation')
 from src.streamlit.model import *
 
@@ -74,7 +76,8 @@ def verify(infile, outfile):
             try:
                 # search top 10 translations
                 words = get_nn(sw, src_embeddings, src_id2word, tgt_embeddings, tgt_id2word, K=10)
-                for w in words:
+                for tup in words:
+                    w = tup[0]
                     if w in matching.keys():
                         matching[w] += 1
 
@@ -140,6 +143,85 @@ def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, t
 
     st.pyplot()
 
+def render_most_similar(data, title):
+
+    bars = (
+    alt.Chart(data, height=400, title=title)
+       .mark_bar()
+       .encode(
+           alt.X(
+               'distance',
+               title='',
+               scale=alt.Scale(domain=(0, 1.0), clamp=True),
+               axis=None
+            ),
+            alt.Y(
+               'word',
+               title='',
+               sort=alt.EncodingSortField(
+                   field='distance',
+                   order='descending'
+               )
+            ),
+            color=alt.Color('distance', legend=None, scale=alt.Scale(scheme='blues')),
+            tooltip=[
+                alt.Tooltip(
+                    field='word',
+                    type='nominal'
+                ),
+                alt.Tooltip(
+                    field='distance',
+                    format='.3f',
+                    type='quantitative'
+                )
+            ]
+       )
+    )
+    text = alt.Chart(data).mark_text(
+        align='left',
+        baseline='middle',
+        dx=5,
+        font='Roboto',
+        size=15,
+        color='black'
+    ).encode(
+        x=alt.X(
+            'distance',
+            axis=None
+        ),
+        y=alt.Y(
+            'word',
+            sort=alt.EncodingSortField(
+                field='distance',
+                order='descending'
+            )
+        ),
+        text=alt.Text("distance", format=".3f"),
+    )
+    chart = bars + text
+    chart = (chart.configure_axisX(
+           labelFontSize=20,
+           labelFont='Roboto',
+           grid=False,
+           domain=False
+       )
+       .configure_axisY(
+           labelFontSize=20,
+           labelFont='Roboto',
+           grid=False,
+           domain=False
+       )
+       .configure_view(
+            strokeOpacity=0
+       )
+       .configure_title(
+           fontSize=25,
+           font='Roboto',
+           dy=-10
+       )
+    )
+
+    return chart
 
 upload_file = st.sidebar.file_uploader("Upload File", type="csv")
 show_file = st.sidebar.empty()
@@ -165,3 +247,25 @@ tgt_words = [user_input_target.lower()]
 
 if st.sidebar.button("Visualize", key='visualize'):
     plot_similar_word(src_words, src_word2id, src_embeddings, tgt_words, tgt_word2id, tgt_embeddings, pca)
+
+st.sidebar.subheader("Find out Top 10 Similar Words: ")
+user_input = st.sidebar.text_input("Any German Word", "König")
+lowercased = user_input.lower()
+
+if st.sidebar.button("Most Similar"):
+
+    title = 'Top 10 Most Similar Words'
+
+    # printing nearest neighbors in the source space
+    try:
+        ret = get_nn(lowercased, src_embeddings, src_id2word, tgt_embeddings, tgt_id2word, K=10)
+    except Exception as e:
+        ret = None
+        st.markdown('The given word is not in dictionary.')
+
+    if ret is not None:
+        # convert to pandas
+        data = pd.DataFrame(ret, columns=['word', 'distance'])
+
+        chart = render_most_similar(data, title)
+        st.altair_chart(chart)

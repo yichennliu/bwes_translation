@@ -31,5 +31,5 @@ def get_nn(word, src_emb, src_id2word, tgt_emb, tgt_id2word, K=5):
     k_best = scores.argsort()[-K:][::-1]
     for i, idx in enumerate(k_best):
         # print('%.4f - %s' % (scores[idx], tgt_id2word[idx]))
-        results.append(tgt_id2word[idx])
+        results.append((tgt_id2word[idx],scores[idx]))
     return results
