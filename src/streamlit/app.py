@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-import os
 import sys
+
 import altair as alt
 
-#insert your package path here
+# insert your package path here
 sys.path.append('/home/yibsimo/PycharmProjects/bwes_translation')
 from src.streamlit.model import *
 
@@ -11,13 +11,14 @@ import string
 import base64
 import pandas as pd
 
-st.title("Word Embeddings Visaulization")
-st.markdown("Visualizing Bilingual Word Embeddings")
+st.title("Bilingual Word Embeddings(BWEs) Visaulization")
+st.markdown("Using BWEs as an approach to verify human translation")
 
+# load trained embeddings
 src_embeddings, src_id2word, src_word2id = load_vec(
-    r"/home/yibsimo/PycharmProjects/bwes_translation/SRC_MAPPED_de-en.EMB")
+    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/src_MAPPED_de-en.EMB")
 tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(
-    r"/home/yibsimo/PycharmProjects/bwes_translation/TRG_MAPPED_de-en.EMB")
+    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/trg_MAPPED_de-en.EMB")
 
 
 def insert(df, row):
@@ -40,8 +41,8 @@ def create_download_link(data):
     return href
 
 
-@st.cache(persist=True)
-def verify(infile, outfile):
+@st.cache(allow_output_mutation=True)
+def verify(infile, threshold, outfile):
     data = pd.read_csv(infile)
     translation = []
     translated_words = []
@@ -94,11 +95,11 @@ def verify(infile, outfile):
         inputs.append(target_match)
         inputs.append(source_match)
 
-        if target_match < 0.5:
+        if target_match < threshold:
 
             inputs.append("1")
 
-        elif source_match < 0.5:
+        elif source_match < threshold:
 
             inputs.append("1")
 
@@ -143,25 +144,25 @@ def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, t
 
     st.pyplot()
 
-def render_most_similar(data, title):
 
+def render_most_similar(data, title):
     bars = (
-    alt.Chart(data, height=400, title=title)
-       .mark_bar()
-       .encode(
-           alt.X(
-               'distance',
-               title='',
-               scale=alt.Scale(domain=(0, 1.0), clamp=True),
-               axis=None
+        alt.Chart(data, height=400, title=title)
+            .mark_bar()
+            .encode(
+            alt.X(
+                'distance',
+                title='',
+                scale=alt.Scale(domain=(0, 1.0), clamp=True),
+                axis=None
             ),
             alt.Y(
-               'word',
-               title='',
-               sort=alt.EncodingSortField(
-                   field='distance',
-                   order='descending'
-               )
+                'word',
+                title='',
+                sort=alt.EncodingSortField(
+                    field='distance',
+                    order='descending'
+                )
             ),
             color=alt.Color('distance', legend=None, scale=alt.Scale(scheme='blues')),
             tooltip=[
@@ -175,7 +176,7 @@ def render_most_similar(data, title):
                     type='quantitative'
                 )
             ]
-       )
+        )
     )
     text = alt.Chart(data).mark_text(
         align='left',
@@ -200,37 +201,41 @@ def render_most_similar(data, title):
     )
     chart = bars + text
     chart = (chart.configure_axisX(
-           labelFontSize=20,
-           labelFont='Roboto',
-           grid=False,
-           domain=False
-       )
-       .configure_axisY(
-           labelFontSize=20,
-           labelFont='Roboto',
-           grid=False,
-           domain=False
-       )
-       .configure_view(
-            strokeOpacity=0
-       )
-       .configure_title(
-           fontSize=25,
-           font='Roboto',
-           dy=-10
-       )
+        labelFontSize=20,
+        labelFont='Roboto',
+        grid=False,
+        domain=False
+    )
+        .configure_axisY(
+        labelFontSize=20,
+        labelFont='Roboto',
+        grid=False,
+        domain=False
+    )
+        .configure_view(
+        strokeOpacity=0
+    )
+        .configure_title(
+        fontSize=25,
+        font='Roboto',
+        dy=-10
+    )
     )
 
     return chart
 
+
+st.sidebar.header("Import File and Start Verification")
 upload_file = st.sidebar.file_uploader("Upload File", type="csv")
 show_file = st.sidebar.empty()
 
 if not upload_file:
     show_file.info("Please upload the csv file")
 
+threshold = st.sidebar.slider("Set Flagging Threshold", 0.0, 0.6)
+
 if st.sidebar.button("Verify", key='verify'):
-    href = verify(upload_file, "result.csv")
+    href = verify(upload_file, threshold, "result.csv")
     st.markdown(href, unsafe_allow_html=True)
 
 pca = PCA(n_components=2, whiten=True)  # TSNE(n_components=2, n_iter=3000, verbose=2)

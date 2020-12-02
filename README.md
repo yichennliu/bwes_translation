@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## Usage
 
-Before running translation verification, bilingual word embeddings need to be created. For tasks in SHARE, we use [Vecmap](https://github.com/artetxem/vecmap) to train them.
+Before running translation verification, bilingual word embeddings need to be created. For tasks in SHARE, we are using [Vecmap](https://github.com/artetxem/vecmap) to train them.
 
 
 ### Streamlit
@@ -44,6 +44,11 @@ python3 translation_verifier.py SRC_MAPPED_de-en.EMB TRG_MAPPED_de-en.EMB demo.c
 ```
 
 The results are listed in a csv file. Target match scores that are lower than 0.50 will be flagged (noted as 1), implying human verifiers that they should recheck their translation. For more detail about how the csv files are created, please check the demo.csv and results.csv in the data directory.
+
+## Presentations
+
+We have presented this approach in [BigSurv20](https://www.bigsurv20.org/) and seminars in [Max Planck Institute for Social Law and Social Policy](https://www.mpg.de/149954/sozialrecht). Presentation slides and documentation could be found in the data directory.
+
 
 
 

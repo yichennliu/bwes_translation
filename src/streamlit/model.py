@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-@st.cache(persist=True)
+@st.cache(allow_output_mutation=True)
 def load_vec(emb_path):
     vectors = []
     word2id = {}

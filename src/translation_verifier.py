@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 
+#insert your package path here
 sys.path.append('/home/yibsimo/PycharmProjects/bwes_translation')
 from src.streamlit.model import load_vec, get_nn
 import csv
