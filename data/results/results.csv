@@ -1,3 +1,3 @@
-Generics,Translation,Target Match Score,Source Match Score,Flag
+Source,Target,Target Match Score,Source Match Score,Flag
 Were you born in the United Kingdom?,Wurden Sie innerhalb der gegenwärtigen Grenzen der Bundesrepublik Deutschland geboren?,0.6,0.86,0
 In which year did you get married?,In welchem Jahr haben Sie geheiratet?,0.67,0.57,0

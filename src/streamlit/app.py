@@ -10,16 +10,18 @@ from src.streamlit.model import *
 import string
 import base64
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+import os
+import glob
 
-st.title("Bilingual Word Embeddings(BWEs) Visaulization")
+st.title("Bilingual Word Embeddings(BWEs) Visualization")
 st.markdown("Using BWEs as an approach to verify human translation")
 
-# load trained embeddings
-src_embeddings, src_id2word, src_word2id = load_vec(
-    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/src_MAPPED_de-en.EMB")
-tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(
-    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/trg_MAPPED_de-en.EMB")
+DATA_URL = (r"../../data/results/results.csv")
 
+# load trained embeddings
+src_embeddings, src_id2word, src_word2id = load_vec(r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/src_MAPPED_de-en.EMB")
+tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/trg_MAPPED_de-en.EMB")
 
 def insert(df, row):
     insert_loc = df.index.max()
@@ -41,6 +43,15 @@ def create_download_link(data):
     return href
 
 
+
+@st.cache(persist=True)
+def load_data():
+    data = pd.read_csv(DATA_URL)
+    label = LabelEncoder()
+    for col in data.columns:
+        data[col] = label.fit_transform(data[col])
+    return data
+
 @st.cache(allow_output_mutation=True)
 def verify(infile, threshold, outfile):
     data = pd.read_csv(infile)
@@ -50,12 +61,12 @@ def verify(infile, threshold, outfile):
     reference_words = []
     matching = {}
 
-    outfile = pd.DataFrame(columns=['Generics', 'Translation', 'Target Match Score', 'Source Match Score', 'Flag'])
+    outfile = pd.DataFrame(columns=['Source', 'Target', 'Target Match Score', 'Source Match Score', 'Flag'])
 
     for idx, value in data.iterrows():
 
         generics = value.str.strip().loc['Source']
-        given_translation = value.str.strip().loc['Translated']
+        given_translation = value.str.strip().loc['Target']
         reference.append(generics)
         translation.append(given_translation)
 
@@ -130,8 +141,8 @@ def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, t
     y_coords = Y[:, 1]
 
     # display scatter plot
-    plt.figure(figsize=(10, 8), dpi=80)
-    plt.scatter(x_coords, y_coords, marker='x')
+    fig, ax = plt.subplots()
+    ax.scatter(x_coords, y_coords, marker='x')
 
     for k, (label, x, y) in enumerate(zip(word_labels, x_coords, y_coords)):
         color = 'blue' if k < len(src_words) else 'red'  # src words in blue / tgt words in red
@@ -142,8 +153,7 @@ def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, t
     plt.ylim(y_coords.min() - 0.2, y_coords.max() + 0.2)
     plt.title('Visualization of the multilingual word embedding space')
 
-    st.pyplot()
-
+    st.pyplot(fig)
 
 def render_most_similar(data, title):
     bars = (
@@ -224,7 +234,6 @@ def render_most_similar(data, title):
 
     return chart
 
-
 st.sidebar.header("Import File and Start Verification")
 upload_file = st.sidebar.file_uploader("Upload File", type="csv")
 show_file = st.sidebar.empty()
@@ -232,11 +241,15 @@ show_file = st.sidebar.empty()
 if not upload_file:
     show_file.info("Please upload the csv file")
 
-threshold = st.sidebar.slider("Set Flagging Threshold", 0.0, 0.6)
+threshold = st.sidebar.slider("Set Flagging Threshold", 0.0, 1.0)
 
 if st.sidebar.button("Verify", key='verify'):
     href = verify(upload_file, threshold, "result.csv")
     st.markdown(href, unsafe_allow_html=True)
+
+result_data = load_data()
+if st.sidebar.checkbox("Show results", False):
+    st.write(result_data)
 
 pca = PCA(n_components=2, whiten=True)  # TSNE(n_components=2, n_iter=3000, verbose=2)
 pca.fit(np.vstack([src_embeddings, tgt_embeddings]))
@@ -244,8 +257,8 @@ pca.fit(np.vstack([src_embeddings, tgt_embeddings]))
 
 
 st.sidebar.subheader("Type German translation you want to check: ")
-user_input_source = st.sidebar.text_input("German Translation Input", "König")
-user_input_target = st.sidebar.text_input("English Translation", "King")
+user_input_source = st.sidebar.text_input("German Translation Input")
+user_input_target = st.sidebar.text_input("English Translation")
 
 src_words = [user_input_source.lower()]
 tgt_words = [user_input_target.lower()]
@@ -253,8 +266,9 @@ tgt_words = [user_input_target.lower()]
 if st.sidebar.button("Visualize", key='visualize'):
     plot_similar_word(src_words, src_word2id, src_embeddings, tgt_words, tgt_word2id, tgt_embeddings, pca)
 
+
 st.sidebar.subheader("Find out Top 10 Similar Words: ")
-user_input = st.sidebar.text_input("Any German Word", "König")
+user_input = st.sidebar.text_input("Any German Word")
 lowercased = user_input.lower()
 
 if st.sidebar.button("Most Similar"):
@@ -274,3 +288,6 @@ if st.sidebar.button("Most Similar"):
 
         chart = render_most_similar(data, title)
         st.altair_chart(chart)
+
+
+

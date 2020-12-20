@@ -15,7 +15,7 @@ output = sys.argv[4]
 def main():
     with open(output, 'w') as op:
         writer = csv.writer(op, delimiter=',')
-        header = ['Generics', 'Translation', 'Target Match Score', 'Source Match Score', 'Flag']
+        header = ['Source', 'Target', 'Target Match Score', 'Source Match Score', 'Flag']
         writer.writerow(i for i in header)
 
         with open(sys.argv[3], 'r') as file:
