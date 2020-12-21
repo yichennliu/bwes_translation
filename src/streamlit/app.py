@@ -44,16 +44,8 @@ def create_download_link(data):
 
 
 
-@st.cache(persist=True)
-def load_data():
-    data = pd.read_csv(DATA_URL)
-    label = LabelEncoder()
-    for col in data.columns:
-        data[col] = label.fit_transform(data[col])
-    return data
-
 @st.cache(allow_output_mutation=True)
-def verify(infile, threshold, outfile):
+def verify(infile, threshold):
     data = pd.read_csv(infile)
     translation = []
     translated_words = []
@@ -122,7 +114,8 @@ def verify(infile, threshold, outfile):
 
     href = create_download_link(outfile)
 
-    return href
+
+    return href, outfile
 
 
 def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, tgt_emb, pca):
@@ -234,6 +227,10 @@ def render_most_similar(data, title):
 
     return chart
 
+def highlight_flagged(s):
+    if s.Flag:
+        return ['background-color: red']*len(s)
+
 st.sidebar.header("Import File and Start Verification")
 upload_file = st.sidebar.file_uploader("Upload File", type="csv")
 show_file = st.sidebar.empty()
@@ -244,12 +241,10 @@ if not upload_file:
 threshold = st.sidebar.slider("Set Flagging Threshold", 0.0, 1.0)
 
 if st.sidebar.button("Verify", key='verify'):
-    href = verify(upload_file, threshold, "result.csv")
-    st.markdown(href, unsafe_allow_html=True)
+    result = verify(upload_file, threshold)
+    st.markdown(result[0], unsafe_allow_html=True)
+    st.dataframe(result[1].style.apply(highlight_flagged, axis=1))
 
-result_data = load_data()
-if st.sidebar.checkbox("Show results", False):
-    st.write(result_data)
 
 pca = PCA(n_components=2, whiten=True)  # TSNE(n_components=2, n_iter=3000, verbose=2)
 pca.fit(np.vstack([src_embeddings, tgt_embeddings]))
