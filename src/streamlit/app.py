@@ -10,18 +10,16 @@ from src.streamlit.model import *
 import string
 import base64
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder
-import os
-import glob
 
 st.title("Bilingual Word Embeddings(BWEs) Visualization")
 st.markdown("Using BWEs as an approach to verify human translation")
 
-DATA_URL = (r"../../data/results/results.csv")
-
 # load trained embeddings
-src_embeddings, src_id2word, src_word2id = load_vec(r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/src_MAPPED_de-en.EMB")
-tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/trg_MAPPED_de-en.EMB")
+src_embeddings, src_id2word, src_word2id = load_vec(
+    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/src_MAPPED_de-en.EMB")
+tgt_embeddings, tgt_id2word, tgt_word2id = load_vec(
+    r"/home/yibsimo/PycharmProjects/bwes_translation/data/model/trg_MAPPED_de-en.EMB")
+
 
 def insert(df, row):
     insert_loc = df.index.max()
@@ -43,8 +41,7 @@ def create_download_link(data):
     return href
 
 
-
-@st.cache(allow_output_mutation=True)
+@st.cache(suppress_st_warning=True)
 def verify(infile, threshold):
     data = pd.read_csv(infile)
     translation = []
@@ -114,7 +111,6 @@ def verify(infile, threshold):
 
     href = create_download_link(outfile)
 
-
     return href, outfile
 
 
@@ -147,6 +143,7 @@ def plot_similar_word(src_words, src_word2id, src_emb, tgt_words, tgt_word2id, t
     plt.title('Visualization of the multilingual word embedding space')
 
     st.pyplot(fig)
+
 
 def render_most_similar(data, title):
     bars = (
@@ -227,9 +224,11 @@ def render_most_similar(data, title):
 
     return chart
 
+
 def highlight_flagged(s):
     if s.Flag:
-        return ['background-color: red']*len(s)
+        return ['background-color: red'] * len(s)
+
 
 st.sidebar.header("Import File and Start Verification")
 upload_file = st.sidebar.file_uploader("Upload File", type="csv")
@@ -245,7 +244,6 @@ if st.sidebar.button("Verify", key='verify'):
     st.markdown(result[0], unsafe_allow_html=True)
     st.dataframe(result[1].style.apply(highlight_flagged, axis=1))
 
-
 pca = PCA(n_components=2, whiten=True)  # TSNE(n_components=2, n_iter=3000, verbose=2)
 pca.fit(np.vstack([src_embeddings, tgt_embeddings]))
 # print('Variance explained: %.2f' % pca.explained_variance_ratio_.sum())
@@ -260,7 +258,6 @@ tgt_words = [user_input_target.lower()]
 
 if st.sidebar.button("Visualize", key='visualize'):
     plot_similar_word(src_words, src_word2id, src_embeddings, tgt_words, tgt_word2id, tgt_embeddings, pca)
-
 
 st.sidebar.subheader("Find out Top 10 Similar Words: ")
 user_input = st.sidebar.text_input("Any German Word")
@@ -283,6 +280,3 @@ if st.sidebar.button("Most Similar"):
 
         chart = render_most_similar(data, title)
         st.altair_chart(chart)
-
-
-
