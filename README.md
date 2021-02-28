@@ -52,8 +52,8 @@ We have presented this approach in [BigSurv20](https://www.bigsurv20.org/) and s
 
 ## Acknowledgement
 
-This project was developed and test as part of H2020 EU Project [SSHOC](https://sshopencloud.eu/)
-![Alt text](img/sshoc_logo.png)
-![Alt text](img/sshoc_eu_tag.png)
+This project was developed and tested as part of H2020 EU Project [SSHOC](https://sshopencloud.eu/)
+![Alt text](data/img/sshoc_logo.png)
+![Alt text](data/img/sshoc_eu_tag.png)
 
 
