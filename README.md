@@ -50,5 +50,10 @@ The results are listed in a csv file. Target match scores that are lower than 0.
 We have presented this approach in [BigSurv20](https://www.bigsurv20.org/) and seminars in [Max Planck Institute for Social Law and Social Policy](https://www.mpg.de/149954/sozialrecht). Presentation slides and documentation could be found in the data directory.
 
 
+## Acknowledgement
+
+This project was developed and test as part of H2020 EU Project [SSHOC](https://sshopencloud.eu/)
+![Alt text](img/sshoc_logo.png)
+![Alt text](img/sshoc_eu_tag.png)
 
 
